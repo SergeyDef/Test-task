@@ -121,6 +121,9 @@ export default {
 
 </script>
 <style lang="scss" >
+@import "~@/scss/fonts.scss";
+@import "~@/scss/variables.scss";
+@import "~@/scss/mixins.scss";
 
 html{
   height: 100%;

@@ -26,6 +26,7 @@ export default {
 <style lang="scss">
 @import "~@/scss/fonts.scss";
 @import "~@/scss/mixins.scss";
+@import "~@/scss/variables.scss";
 
 *{
   margin: 0;
