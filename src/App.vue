@@ -1,8 +1,6 @@
 <template lang="pug">
   #app
-    header-section(
-      @onClick="onClick"
-    )
+    header-section()
 </template>
 
 <script>
@@ -15,7 +13,7 @@ export default {
   },
    data() {
     return {
-      showPurchaseWindow: false,
+      
     };
   },
   methods: {

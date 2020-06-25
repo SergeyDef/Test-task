@@ -5,6 +5,9 @@
     .search__form.form
       input.form__input#search
       button( v-on:click="searchUser" ).form__button search
+      select.form__method
+        option.form__method__item by name
+        option.form__method__item by id
     .search__users__list.table
       table
         tr.table__line
@@ -176,12 +179,28 @@ body{
     }
     .form__button{
       background-color: #24baef;
+      margin-right: 130px;
       border-color: #24baef;
-      border-radius: 0 .35714rem .35714rem 0;
+      border-right: none;
       font-weight: 600;
       padding: 10px 15px;
       color: #fff;
+      border-radius: 0 .35714rem .35714rem 0;
       text-transform: uppercase;
+    }
+    .form__method{
+      width: 130px;
+      padding: 5px 5px;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      background-color: #24baef;
+      text-transform: uppercase;
+    }
+    .form__method__item{
+      padding: 12px 11px;
+      background-color: #24baef;
+      height: 30px;
     }
   }
   .search__users__list{
