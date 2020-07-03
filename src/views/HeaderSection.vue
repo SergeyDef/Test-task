@@ -5,16 +5,18 @@
     .search__form.form
       input.form__input#search
       button( v-on:click="searchUser" ).form__button search
-      select.form__method
-        option.form__method__item by name
-        option.form__method__item by id
+      //select.form__method
+        //option( value="1").form__method__item by name
+        //option( value="2").form__method__item by id
     .search__users__list.table
       table
-        tr.table__line
+        tr
           td.table__cell
             span.table__header photo
           td.table__cell
             span.table__header name
+          td.table__cell
+            span.table__header surname
           td.table__cell
             span.table__header id
         element-table( 
@@ -22,101 +24,129 @@
           :key="user.id"
           v-bind:user_data="user"
          )
+    info-button( v-if="infoIndicator" )
 </template>
 
 <script>
+import InfoWindow from '@/components/InfoWindow';
 import ElementTable from '@/components/ElementTable';
+import InfoButton from '@/components/InfoButton';
+import * as axios from 'axios';
 
 export default {
   name: "search-users",
   components: {
-    ElementTable
+    ElementTable,
+    InfoWindow,
+    InfoButton,
   },
   data() {
     return {
       title: 'find and sort users',
       users: [
         {
-          id:1, 
-          friendName:"Марина", 
-          avatarSrcFriend:"https://avatars.mds.yandex.net/get-pdb/1936494/b54ac088-fa39-4f4f-b8dd-1d387da466ae/s1200"
+          id:1,
+          firstName:"Марина",
+          lastName:"Шипилова",
+          avatarSrcFriend:"https://avatars.mds.yandex.net/get-pdb/1936494/b54ac088-fa39-4f4f-b8dd-1d387da466ae/s1200",
+          registrationDate:"08.12.2014",
         },
         {
           id:2, 
-          friendName:"Валерия", 
-          avatarSrcFriend:"https://yt3.ggpht.com/a/AATXAJyeElqaUFj1Orn19o0Ux-EHBnPkx1sqqtaK8g=s900-c-k-c0xffffffff-no-rj-mo"
+          firstName:"Валерия",
+          lastName:"Воротынцева", 
+          avatarSrcFriend:"https://yt3.ggpht.com/a/AATXAJyeElqaUFj1Orn19o0Ux-EHBnPkx1sqqtaK8g=s900-c-k-c0xffffffff-no-rj-mo",
+          registrationDate:"01.03.2016",
         },
         {
-          id:3, 
-          friendName:"Lenka", 
-          avatarSrcFriend:"https://yt3.ggpht.com/a/AGF-l78G1OYVfx10MRsHr3tzTjQ_FFMM6nt_cjiZzQ=s900-c-k-c0xffffffff-no-rj-mo"
+          id:3,
+          firstName:"Lenka",
+          lastName:"Drozdowa", 
+          avatarSrcFriend:"https://yt3.ggpht.com/a/AGF-l78G1OYVfx10MRsHr3tzTjQ_FFMM6nt_cjiZzQ=s900-c-k-c0xffffffff-no-rj-mo",
+          registrationDate:"09.07.2020",
         },
         {
           id:4, 
-          friendName:"Алексей", 
-          avatarSrcFriend:"https://img3.badfon.ru/wallpaper/big/3/2d/devushka-lico-elf-vzglyad-7450.jpg"
+          firstName:"Алексей",
+          lastName:"Башаров", 
+          avatarSrcFriend:"https://img3.badfon.ru/wallpaper/big/3/2d/devushka-lico-elf-vzglyad-7450.jpg",
+          registrationDate:"04.10.2019",
         },
         {
-          id:5, 
-          friendName:"Катя", 
-          avatarSrcFriend:"https://i.pinimg.com/originals/8a/ec/c4/8aecc4b99cf3f2cf1ddd0052f934a527.jpg"
+          id:5,
+          firstName:"Катя",
+          lastName:"Лапина",
+          avatarSrcFriend:"https://i.pinimg.com/originals/8a/ec/c4/8aecc4b99cf3f2cf1ddd0052f934a527.jpg",
+          registrationDate:"08.06.2015",
         },
         {
           id:6, 
-          friendName:"Ленка", 
-          avatarSrcFriend:"https://i.pinimg.com/originals/45/34/8c/45348c6e37956ee991a3ebd845e4d762.jpg"
+          firstName:"Anna",
+          lastName:"Tobulina", 
+          avatarSrcFriend:"https://i.pinimg.com/originals/45/34/8c/45348c6e37956ee991a3ebd845e4d762.jpg",
+          registrationDate:"10.01.2020",
         },
         {
           id:7, 
-          friendName:"Пётр", 
-          avatarSrcFriend:"https://i.pinimg.com/736x/99/1b/91/991b9187e4b6cbf0d0e2a170e04b6ceb.jpg"
+          firstName:"Пётр",
+          lastName:"Роднов", 
+          avatarSrcFriend:"https://i.pinimg.com/736x/99/1b/91/991b9187e4b6cbf0d0e2a170e04b6ceb.jpg",
+          registrationDate:"15.04.2018",
         },
-              {
+        {
           id:8, 
-          friendName:"Елена", 
-          avatarSrcFriend:"https://pbs.twimg.com/media/Drx3N9eU8AEXgjW.jpg"
+          firstName:"Елена",
+          lastName:"Уткина", 
+          avatarSrcFriend:"https://pbs.twimg.com/media/Drx3N9eU8AEXgjW.jpg",
+          registrationDate:"27.09.2016",
         },
         {
           id:9, 
-          friendName:"Тытьяна", 
-          avatarSrcFriend:"https://i.ytimg.com/vi/iAU8yKY9tAY/maxresdefault.jpg"
-        }
-      ]
+          firstName:"Тытьяна",
+          lastName:"Нагиева", 
+          avatarSrcFriend:"https://i.ytimg.com/vi/iAU8yKY9tAY/maxresdefault.jpg",
+          registrationDate:"07.12.2015",
+        },
+        {
+          id:10, 
+          firstName:"Димон",
+          lastName:"Антонов", 
+          avatarSrcFriend:"https://trikky.ru/wp-content/blogs.dir/1/files/2018/07/23/c8a00eb61059d7e0507050742671f5a0.jpg",
+          registrationDate:"11.10.2014",
+        },
+        {
+          id:11, 
+          firstName:"Нина",
+          lastName:"Лунеева", 
+          avatarSrcFriend:"https://i.pinimg.com/originals/bc/2d/42/bc2d4235943b77a438d330b6d4d54048.jpg",
+          registrationDate:"11.12.2016",
+        },
+      ],
+      info: null,
+      infoIndicator: false,
     };
+  },
+  mounted() {
+    axios
+    .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/friends_profile.json')
+    .then(response => (this.info = response));
   },
   methods: {
     getUsers: function () {
-      
-      let xhr = new XMLHttpRequest();
-
-      xhr.open("GET", "https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/friends_profile.json");
-
-      xhr.send()
-
-      xhr.responseType = "json"
-      
-      xhr.onload = function() {
-        //let obj = xhr.response.items
-        //let us = obj.slice()
-        //console.log(us)
-      }
-      console.log(this.users)
+      console.log(this.info)
     },
     searchUser: function(){
       let input = document.getElementById('search');
-
-      let test = [1, 5, 8, 9, 4].filter(function(item){
-        item == +input.value
-      });
-
-      console.log(test);
       
       let results = this.users.filter(function(item){
-        item.id == +input.value
-        console.log(item.id == +input.value)
+        
+        return item.id === +input.value ||
+        item.firstName.toLowerCase() === input.value.toLowerCase() || 
+        item.lastName.toLowerCase() === input.value.toLowerCase();
       });
 
       console.log(results);
+      this.users = results
       console.log(input.value);
     },
   }
@@ -179,7 +209,7 @@ body{
     }
     .form__button{
       background-color: #24baef;
-      margin-right: 130px;
+      //margin-right: 130px;
       border-color: #24baef;
       border-right: none;
       font-weight: 600;
