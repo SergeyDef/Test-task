@@ -26,7 +26,6 @@ export default {
     },
   data: function () {
     return {
-      info_determiner: true,
     }
   },
   mounted() {
@@ -36,8 +35,7 @@ export default {
   },
   methods: {
     showWindow: function(){
-      this.info_determiner = true;
-      alert(this.info_determiner)
+      this.$emit('choose', this.user_data.id)
     }
   },
 }
@@ -60,12 +58,7 @@ export default {
       font-size: 20px;
       border-left: 1px solid #fff;
     }
-    .table__header{
-      font-size: 25px;
-      font-weight: 900;
 
-      text-transform: uppercase;
-    }
     .table__photo{
       width: 20%;
       height: 50px;

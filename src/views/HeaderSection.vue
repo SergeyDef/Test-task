@@ -10,27 +10,42 @@
         //option( value="2").form__method__item by id
     .search__users__list.table
       table
-        tr
+        tr.table__header
           td.table__cell
-            span.table__header photo
+            span.table__header__text photo
           td.table__cell
-            span.table__header name
+            span.table__header__text name
           td.table__cell
-            span.table__header surname
+            span.table__header__text surname
           td.table__cell
-            span.table__header id
+            span.table__header__text id
         element-table( 
-          v-for="user in users"
+          v-for="user in usersCopy"
           :key="user.id"
           v-bind:user_data="user"
+          v-on:choose="chooseInfoWindow"
          )
-    info-button( v-if="infoIndicator" )
+    info-button( 
+      v-if="infoIndicator" 
+      v-on:hide="hideInfoWindow"
+      v-for="userInfo in infoWindow"
+      :key="userInfo.id"
+      v-bind:user_info="userInfo"
+      )
+    popup-link(
+      v-if="informationIndicator"
+      v-on:hideInfo="hideAnswer"
+      v-for="answer in infoAnswer"
+      :key="answer.id"
+      v-bind:info_answer="answer"
+      )
 </template>
 
 <script>
 import InfoWindow from '@/components/InfoWindow';
 import ElementTable from '@/components/ElementTable';
 import InfoButton from '@/components/InfoButton';
+import PopupLink from '@/components/PopupLink';
 import * as axios from 'axios';
 
 export default {
@@ -39,115 +54,68 @@ export default {
     ElementTable,
     InfoWindow,
     InfoButton,
+    PopupLink,
   },
   data() {
     return {
       title: 'find and sort users',
-      users: [
-        {
-          id:1,
-          firstName:"Марина",
-          lastName:"Шипилова",
-          avatarSrcFriend:"https://avatars.mds.yandex.net/get-pdb/1936494/b54ac088-fa39-4f4f-b8dd-1d387da466ae/s1200",
-          registrationDate:"08.12.2014",
-        },
-        {
-          id:2, 
-          firstName:"Валерия",
-          lastName:"Воротынцева", 
-          avatarSrcFriend:"https://yt3.ggpht.com/a/AATXAJyeElqaUFj1Orn19o0Ux-EHBnPkx1sqqtaK8g=s900-c-k-c0xffffffff-no-rj-mo",
-          registrationDate:"01.03.2016",
-        },
-        {
-          id:3,
-          firstName:"Lenka",
-          lastName:"Drozdowa", 
-          avatarSrcFriend:"https://yt3.ggpht.com/a/AGF-l78G1OYVfx10MRsHr3tzTjQ_FFMM6nt_cjiZzQ=s900-c-k-c0xffffffff-no-rj-mo",
-          registrationDate:"09.07.2020",
-        },
-        {
-          id:4, 
-          firstName:"Алексей",
-          lastName:"Башаров", 
-          avatarSrcFriend:"https://img3.badfon.ru/wallpaper/big/3/2d/devushka-lico-elf-vzglyad-7450.jpg",
-          registrationDate:"04.10.2019",
-        },
-        {
-          id:5,
-          firstName:"Катя",
-          lastName:"Лапина",
-          avatarSrcFriend:"https://i.pinimg.com/originals/8a/ec/c4/8aecc4b99cf3f2cf1ddd0052f934a527.jpg",
-          registrationDate:"08.06.2015",
-        },
-        {
-          id:6, 
-          firstName:"Anna",
-          lastName:"Tobulina", 
-          avatarSrcFriend:"https://i.pinimg.com/originals/45/34/8c/45348c6e37956ee991a3ebd845e4d762.jpg",
-          registrationDate:"10.01.2020",
-        },
-        {
-          id:7, 
-          firstName:"Пётр",
-          lastName:"Роднов", 
-          avatarSrcFriend:"https://i.pinimg.com/736x/99/1b/91/991b9187e4b6cbf0d0e2a170e04b6ceb.jpg",
-          registrationDate:"15.04.2018",
-        },
-        {
-          id:8, 
-          firstName:"Елена",
-          lastName:"Уткина", 
-          avatarSrcFriend:"https://pbs.twimg.com/media/Drx3N9eU8AEXgjW.jpg",
-          registrationDate:"27.09.2016",
-        },
-        {
-          id:9, 
-          firstName:"Тытьяна",
-          lastName:"Нагиева", 
-          avatarSrcFriend:"https://i.ytimg.com/vi/iAU8yKY9tAY/maxresdefault.jpg",
-          registrationDate:"07.12.2015",
-        },
-        {
-          id:10, 
-          firstName:"Димон",
-          lastName:"Антонов", 
-          avatarSrcFriend:"https://trikky.ru/wp-content/blogs.dir/1/files/2018/07/23/c8a00eb61059d7e0507050742671f5a0.jpg",
-          registrationDate:"11.10.2014",
-        },
-        {
-          id:11, 
-          firstName:"Нина",
-          lastName:"Лунеева", 
-          avatarSrcFriend:"https://i.pinimg.com/originals/bc/2d/42/bc2d4235943b77a438d330b6d4d54048.jpg",
-          registrationDate:"11.12.2016",
-        },
-      ],
+      users: [],
+      usersCopy: null,
       info: null,
       infoIndicator: false,
+      infoWindow: null,
+      informationIndicator: false,
+      infoAnswer: [
+        {
+          id:1,
+          answerInfo: null,
+        }
+      ],
     };
   },
   mounted() {
     axios
-    .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/friends_profile.json')
-    .then(response => (this.info = response));
+      .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
+      .then(response => (this.users = response.data.items))
+      .catch(error => alert(error))
+      .finally( () => ( this.usersCopy = this.users.slice() ) )
   },
   methods: {
     getUsers: function () {
-      console.log(this.info)
+      console.log(this.usersCopy)
     },
     searchUser: function(){
       let input = document.getElementById('search');
-      
-      let results = this.users.filter(function(item){
-        
+
+      if (input.value == "" || input.value == " ") {
+        this.informationIndicator = true
+        this.infoAnswer[0].answerInfo = "You entered an empty string! Enter a query."  
+
+      } else if (input.value != "" || input.value != " "){
+
+        let results = this.users.filter(function(item){
         return item.id === +input.value ||
         item.firstName.toLowerCase() === input.value.toLowerCase() || 
         item.lastName.toLowerCase() === input.value.toLowerCase();
       });
-
-      console.log(results);
-      this.users = results
-      console.log(input.value);
+        if (results.length === 0 ) {
+          this.usersCopy = this.users 
+          this.informationIndicator = true
+          this.infoAnswer[0].answerInfo = "The user is not found. Repeat the request."
+        } else{
+          this.usersCopy = results
+        }
+      }
+    },
+    chooseInfoWindow: function (id){
+      this.infoWindow = this.users.filter(item => item.id === id )
+      this.infoIndicator = true
+    },
+    hideInfoWindow: function (){
+      this.infoIndicator = false
+    },
+    hideAnswer: function (){
+      this.informationIndicator = false
     },
   }
 }
@@ -176,12 +144,12 @@ body{
   position: relative;
   background-color: #333333;
 
-  .search__title{
+  &__title{
     text-transform: uppercase;
     padding: 30px 0;
   }
 
-  .search__button{
+  &__button{
     position: absolute;
     top: 30px;
     left: 50px;
@@ -194,20 +162,26 @@ body{
     border-color: #24baef;
   }
 
-  .search__form{
+  &__form{
     width: 100%;
     height: auto;
   }
 
+  &__users__list{
+    width: 80%;
+    height: auto;
+    margin: auto;
+  }
+
   .form{
 
-    .form__input{
+    &__input{
       width: 550px;
       height: 35px;
       border-color: #24baef;
       border-radius: .35714rem 0 0 .35714rem;
     }
-    .form__button{
+    &__button{
       background-color: #24baef;
       //margin-right: 130px;
       border-color: #24baef;
@@ -218,7 +192,7 @@ body{
       border-radius: 0 .35714rem .35714rem 0;
       text-transform: uppercase;
     }
-    .form__method{
+    &__method{
       width: 130px;
       padding: 5px 5px;
       border: none;
@@ -227,16 +201,11 @@ body{
       background-color: #24baef;
       text-transform: uppercase;
     }
-    .form__method__item{
+    &__method__item{
       padding: 12px 11px;
       background-color: #24baef;
       height: 30px;
     }
-  }
-  .search__users__list{
-    width: 80%;
-    height: auto;
-    margin: auto;
   }
   .table{
     margin: 40px auto;
@@ -245,6 +214,16 @@ body{
     table{
       margin: auto;
       border: 2px solid #fff;
+    }
+
+    &__header{
+      background-color: #000;
+    }
+
+    &__header__text{
+      font-size: 25px;
+      font-weight: 900;
+      text-transform: uppercase;
     }
   }
 }

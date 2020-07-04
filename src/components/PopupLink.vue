@@ -1,36 +1,17 @@
 <template lang="pug">
-  .window
+  .window( v-on:click="hideWindow" )
     .window__shut
       .shut( v-on:click="hideWindow" )
         span.shut__text x
       .window__wrapper
-        .window__img
-          img( v-bind:src="user_info.avatarSrcFriend" )
-        .window__info
-          table
-            tr
-              td
-                span id: {{user_info.id}}
-                span 
-            tr
-              td
-                span name: {{user_info.firstName}}
-                span 
-            tr
-              td
-                span surname: {{user_info.lastName}}
-                span 
-            tr
-              td
-                span registration date: {{user_info.registrationDate}}
-                span 
+        span.window__information {{info_answer.answerInfo}}
    
 </template>
 
 <script>
 
 export default {
-  name: "info-button",
+  name: "popup-link",
   components: {
   },
   data() {
@@ -39,7 +20,7 @@ export default {
     };
   },
   props: {
-    user_info: {
+    info_answer: {
       type:Object,
       default(){
         return {}
@@ -48,7 +29,7 @@ export default {
   },
   methods: {
     hideWindow: function (){
-      this.$emit('hide')
+      this.$emit('hideInfo')
       },
   },
 }
@@ -67,7 +48,7 @@ export default {
     display: flex;
     margin: auto;
 
-    &__shut{
+    .window__shut{
       margin: auto;
       display: flex;
       position: relative;
@@ -92,7 +73,7 @@ export default {
       border-radius: 50px;
       padding-bottom: 3px;
 
-      &__text{
+      .shut__text{
         text-align: center;
         margin: auto;
         display: block;
@@ -104,7 +85,7 @@ export default {
       }
     }
 
-    &__wrapper{
+    .window__wrapper{
       width: 690px;
       height: 490px;
       margin: auto;
@@ -112,42 +93,14 @@ export default {
       border: 2px solid #000;
       display: flex;
     }
-
-    &__img{
-      width: 38%;
-      margin: 3%;
-      height: auto;
-
-      img{
-        width: 100%;
-        height: auto;
-      }
-    }
-
-    &__info{
-      width: 50%;
-      margin: 3%;
-
-      table{
-        border: 2px solid #000;
-        color: #fff;
-        width: 100%;
-        text-align: left;
-
-        tr{
-          background-color: #666666;
-        }
-
-        td{
-          height: auto;
-          padding: 10px 0;
-        }
-        
-        span {
-          margin-left: 5px;
-          font-size: 18px;
-        }
-      }
+    .window__information{
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 35px;
+      margin-top: 180px;
+      font-weight: 900;
+      color: #302c28; 
     }
   }
 
