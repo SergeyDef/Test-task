@@ -26,7 +26,7 @@
           v-bind:user_data="user"
           v-on:choose="chooseInfoWindow"
          )
-    info-button( 
+    info-user( 
       v-if="infoIndicator" 
       v-on:hide="hideInfoWindow"
       v-for="userInfo in infoWindow"
@@ -45,7 +45,7 @@
 <script>
 import InfoWindow from '@/components/InfoWindow';
 import ElementTable from '@/components/ElementTable';
-import InfoButton from '@/components/InfoButton';
+import InfoUser from '@/components/InfoUser';
 import PopupLink from '@/components/PopupLink';
 import * as axios from 'axios';
 
@@ -54,7 +54,7 @@ export default {
   components: {
     ElementTable,
     InfoWindow,
-    InfoButton,
+    InfoUser,
     PopupLink,
   },
   data() {

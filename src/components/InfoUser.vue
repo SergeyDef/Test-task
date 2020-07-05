@@ -31,7 +31,7 @@
 <script>
 
 export default {
-  name: "info-button",
+  name: "info-user",
   components: {
   },
   data() {
