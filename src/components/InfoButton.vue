@@ -1,29 +1,30 @@
 <template lang="pug">
   .window
-    .window__shut
-      .shut( v-on:click="hideWindow" )
-        span.shut__text x
-      .window__wrapper
-        .window__img
-          img( v-bind:src="user_info.avatarSrcFriend" )
-        .window__info
-          table
-            tr
-              td
-                span id: {{user_info.id}}
-                span 
-            tr
-              td
-                span name: {{user_info.firstName}}
-                span 
-            tr
-              td
-                span surname: {{user_info.lastName}}
-                span 
-            tr
-              td
-                span registration date: {{user_info.registrationDate}}
-                span 
+    transition( name="window-info" )
+      .window__shut( v-if="windowShut" )
+        .shut( v-on:click="hideWindow" )
+          span.shut__text x
+        .window__wrapper
+          .window__img
+            img( v-bind:src="user_info.avatarSrcFriend" )
+          .window__info
+            table
+              tr
+                td
+                  span id: {{user_info.id}}
+                  span 
+              tr
+                td
+                  span name: {{user_info.firstName}}
+                  span 
+              tr
+                td
+                  span surname: {{user_info.lastName}}
+                  span 
+              tr
+                td
+                  span registration date: {{user_info.registrationDate}}
+                  span 
    
 </template>
 
@@ -35,7 +36,7 @@ export default {
   },
   data() {
     return {
-     
+      windowShut: false,
     };
   },
   props: {
@@ -51,10 +52,15 @@ export default {
       this.$emit('hide')
       },
   },
+  mounted(){
+    this.$nextTick(() => {
+      this.windowShut = true
+    });
+  },
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 @import "~@/scss/fonts.scss";
 @import "~@/scss/variables.scss";
 @import "~@/scss/mixins.scss";
@@ -66,6 +72,24 @@ export default {
     height: 100%;
     display: flex;
     margin: auto;
+
+    .window-info-enter-active {
+      animation: window-info-in 1.9s;
+    }
+    .window-info-leave-active {
+      animation: window-info-in 1.9s reverse;
+    }
+    @keyframes window-info-in {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
 
     &__shut{
       margin: auto;

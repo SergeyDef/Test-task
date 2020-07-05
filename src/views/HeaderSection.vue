@@ -1,10 +1,11 @@
 <template lang="pug">
   .search
     h1.search__title {{ title }}
-    button( v-on:click="getUsers" ).search__button request a list
+    button( v-on:click="getUsers" ).search__button refresh list
     .search__form.form
       input.form__input#search
       button( v-on:click="searchUser" ).form__button search
+      //.search__clear
       //select.form__method
         //option( value="1").form__method__item by name
         //option( value="2").form__method__item by id
@@ -82,7 +83,11 @@ export default {
   },
   methods: {
     getUsers: function () {
-      console.log(this.usersCopy)
+      axios
+      .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
+      .then(response => (this.users = response.data.items))
+      .catch(error => alert(error))
+      .finally( () => ( this.usersCopy = this.users.slice() ) )
     },
     searchUser: function(){
       let input = document.getElementById('search');
@@ -214,6 +219,7 @@ body{
     table{
       margin: auto;
       border: 2px solid #fff;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.25), 0 20px 20px rgba(0,0,0,0.22);
     }
 
     &__header{

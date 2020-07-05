@@ -1,10 +1,11 @@
 <template lang="pug">
   .window( v-on:click="hideWindow" )
-    .window__shut
-      .shut( v-on:click="hideWindow" )
-        span.shut__text x
-      .window__wrapper
-        span.window__information {{info_answer.answerInfo}}
+    transition(name="window-info")
+      .window__shut( v-if="windowShut" )
+        .shut( v-on:click="hideWindow" )
+          span.shut__text x
+        .window__wrapper
+          span.window__information {{info_answer.answerInfo}}
    
 </template>
 
@@ -16,7 +17,7 @@ export default {
   },
   data() {
     return {
-     
+     windowShut: false,
     };
   },
   props: {
@@ -32,10 +33,15 @@ export default {
       this.$emit('hideInfo')
       },
   },
+  mounted(){
+    this.$nextTick(() => {
+      this.windowShut = true
+    });
+  },
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 @import "~@/scss/fonts.scss";
 @import "~@/scss/variables.scss";
 @import "~@/scss/mixins.scss";
@@ -48,7 +54,25 @@ export default {
     display: flex;
     margin: auto;
 
-    .window__shut{
+    .window-info-enter-active {
+      animation: window-info-in 1.9s;
+    }
+    .window-info-leave-active {
+      animation: window-info-in 1.9s reverse;
+    }
+    @keyframes window-info-in {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    &__shut{
       margin: auto;
       display: flex;
       position: relative;
@@ -73,7 +97,7 @@ export default {
       border-radius: 50px;
       padding-bottom: 3px;
 
-      .shut__text{
+      &__text{
         text-align: center;
         margin: auto;
         display: block;
@@ -85,7 +109,7 @@ export default {
       }
     }
 
-    .window__wrapper{
+    &__wrapper{
       width: 690px;
       height: 490px;
       margin: auto;
@@ -93,7 +117,7 @@ export default {
       border: 2px solid #000;
       display: flex;
     }
-    .window__information{
+    &__information{
       display: block;
       width: 100%;
       text-align: center;
