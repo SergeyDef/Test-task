@@ -5,38 +5,43 @@
         .shut( v-on:click="hideWindow" )
           span.shut__text x
         .window__wrapper
-          .window__img
-            img( v-bind:src="user_info.avatarSrcFriend" )
-          .window__info
-            table
-              tr
-                td
-                  span id: {{user_info.id}}
-                  span 
-              tr
-                td
-                  span name: {{user_info.firstName}}
-                  span 
-              tr
-                td
-                  span surname: {{user_info.lastName}}
-                  span 
-              tr
-                td
-                  span registration date: {{user_info.registrationDate}}
-                  span 
+          .windom__user-info( v-if="windomUserInfo")
+            .window__img
+              img( v-bind:src="user_info.avatarSrcFriend" )
+            .window__info
+              table
+                tr
+                  td
+                    span id: {{user_info.id}}
+                    span 
+                tr
+                  td
+                    span name: {{user_info.firstName}}
+                    span 
+                tr
+                  td
+                    span surname: {{user_info.lastName}}
+                    span 
+                tr
+                  td
+                    span registration date: {{user_info.registrationDate}}
+                    span 
+          span(v-if="notification").window__information {{user_info.answerInfo}}
    
 </template>
 
 <script>
 
 export default {
-  name: "info-user",
+  name: "info-message",
   components: {
   },
   data() {
     return {
       windowShut: false,
+      notification: false,
+      windomUserInfo: false,
+
     };
   },
   props: {
@@ -45,7 +50,7 @@ export default {
       default(){
         return {}
       }
-    }
+    },
   },
   methods: {
     hideWindow: function (){
@@ -55,18 +60,22 @@ export default {
   mounted(){
     this.$nextTick(() => {
       this.windowShut = true
+      this.user_info.sensor ? this.notification = true : this.windomUserInfo = true
+      console.log(this.user_info.sensor)
     });
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "~@/scss/fonts.scss";
 @import "~@/scss/variables.scss";
 @import "~@/scss/mixins.scss";
 
   .window{
     position: fixed;
+    left: 0;
+    top: 0;
     background-color: rgba(0,0,0,0.8);
     width: 100%;
     height: 100%;
@@ -136,7 +145,11 @@ export default {
       border: 2px solid #000;
       display: flex;
     }
-
+    .windom__user-info{
+      width: 100%;
+      height: auto;
+      display: flex;
+    }
     &__img{
       width: 38%;
       margin: 3%;
@@ -172,6 +185,15 @@ export default {
           font-size: 18px;
         }
       }
+    }
+    &__information{
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 35px;
+      margin-top: 180px;
+      font-weight: 900;
+      color: #302c28; 
     }
   }
 

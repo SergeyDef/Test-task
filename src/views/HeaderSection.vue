@@ -3,9 +3,10 @@
     h1.search__title {{ title }}
     button( v-on:click="getUsers" ).search__button refresh list
     .search__form.form
+      .form__clear( v-on:click="clearForm")
+        span.clear
       input.form__input#search
       button( v-on:click="searchUser" ).form__button search
-      //.search__clear
       //select.form__method
         //option( value="1").form__method__item by name
         //option( value="2").form__method__item by id
@@ -26,36 +27,32 @@
           v-bind:user_data="user"
           v-on:choose="chooseInfoWindow"
          )
-    info-user( 
+    info-message( 
       v-if="infoIndicator" 
       v-on:hide="hideInfoWindow"
       v-for="userInfo in infoWindow"
       :key="userInfo.id"
       v-bind:user_info="userInfo"
       )
-    popup-link(
+    info-message(
       v-if="informationIndicator"
-      v-on:hideInfo="hideAnswer"
+      v-on:hide="hideAnswer"
       v-for="answer in infoAnswer"
       :key="answer.id"
-      v-bind:info_answer="answer"
+      v-bind:user_info="answer"
       )
 </template>
 
 <script>
-import InfoWindow from '@/components/InfoWindow';
 import ElementTable from '@/components/ElementTable';
-import InfoUser from '@/components/InfoUser';
-import PopupLink from '@/components/PopupLink';
+import InfoMessage from '@/components/InfoMessage';
 import * as axios from 'axios';
 
 export default {
   name: "search-users",
   components: {
     ElementTable,
-    InfoWindow,
-    InfoUser,
-    PopupLink,
+    InfoMessage,
   },
   data() {
     return {
@@ -70,6 +67,7 @@ export default {
         {
           id:1,
           answerInfo: null,
+          sensor: true
         }
       ],
     };
@@ -90,18 +88,17 @@ export default {
       .finally( () => ( this.usersCopy = this.users.slice() ) )
     },
     searchUser: function(){
-      let input = document.getElementById('search');
+      let request = document.getElementById('search').value;
 
-      if (input.value == "" || input.value == " ") {
+      if (request == "" || request == " ") {
         this.informationIndicator = true
         this.infoAnswer[0].answerInfo = "You entered an empty string! Enter a query."  
 
-      } else if (input.value != "" || input.value != " "){
-
+      } else if (request != "" || request != " "){
         let results = this.users.filter(function(item){
-        return item.id === +input.value ||
-        item.firstName.toLowerCase() === input.value.toLowerCase() || 
-        item.lastName.toLowerCase() === input.value.toLowerCase();
+        return item.id === +request ||
+        item.firstName.toLowerCase().includes(request.toLowerCase()) || 
+        item.lastName.toLowerCase().includes(request.toLowerCase());
       });
         if (results.length === 0 ) {
           this.usersCopy = this.users 
@@ -114,6 +111,7 @@ export default {
     },
     chooseInfoWindow: function (id){
       this.infoWindow = this.users.filter(item => item.id === id )
+      this.infoWindow[0].sensor = false
       this.infoIndicator = true
     },
     hideInfoWindow: function (){
@@ -122,6 +120,10 @@ export default {
     hideAnswer: function (){
       this.informationIndicator = false
     },
+    clearForm: function (){
+      let valueForm = document.getElementById('search');
+      valueForm.value = ""
+    }
   }
 }
 
@@ -179,13 +181,17 @@ body{
   }
 
   .form{
+    display: flex;
+    justify-content: center;
 
     &__input{
+      margin-left: 7px;
       width: 550px;
       height: 35px;
       border-color: #24baef;
       border-radius: .35714rem 0 0 .35714rem;
     }
+
     &__button{
       background-color: #24baef;
       //margin-right: 130px;
@@ -197,6 +203,7 @@ body{
       border-radius: 0 .35714rem .35714rem 0;
       text-transform: uppercase;
     }
+
     &__method{
       width: 130px;
       padding: 5px 5px;
@@ -206,10 +213,48 @@ body{
       background-color: #24baef;
       text-transform: uppercase;
     }
+
     &__method__item{
       padding: 12px 11px;
       background-color: #24baef;
       height: 30px;
+    }
+
+    &__clear{
+      position: relative;
+      display: inline-block;
+      margin-top: 7px;
+      width: 25px;
+      height: 25px;
+      background-color: #24baef;
+      opacity: 0.4;
+      border-radius: 20px;
+      cursor: pointer;
+
+      .clear{
+        position: absolute;
+        right: 18%;
+        top: 10%;
+        width: 25px;
+        height: 25px;
+      }
+      .clear:before, .clear:after{
+        position: absolute;
+        left: 15px;
+        content: ' ';
+        height: 20px;
+        width: 3px;
+        background-color: #fff;
+      }
+      .clear:before{
+        transform: rotate(45deg);
+      }
+      .clear:after{
+        transform: rotate(-45deg);
+      }
+    }
+    &__clear:hover{
+      opacity: 0.9;
     }
   }
   .table{
