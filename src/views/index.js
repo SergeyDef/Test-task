@@ -1,2 +1,2 @@
 //header section 
-export { default as HeaderSection } from "./HeaderSection.vue"
+export { default as SearchUsers } from "./SearchUsers.vue"

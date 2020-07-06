@@ -5,7 +5,7 @@
     .search__form.form
       .form__clear( v-on:click="clearForm")
         span.clear
-      input.form__input#search
+      input( v-model="request" placeholder="Enter the query: first name, last name, or user ID" ).form__input#search
       button( v-on:click="searchUser" ).form__button search
       //select.form__method
         //option( value="1").form__method__item by name
@@ -41,11 +41,15 @@
       :key="answer.id"
       v-bind:user_info="answer"
       )
+    disabled-pages(
+      v-if="disabledActive" 
+      )
 </template>
 
 <script>
 import ElementTable from '@/components/ElementTable';
 import InfoMessage from '@/components/InfoMessage';
+import DisabledPages from '@/components/DisabledPages';
 import * as axios from 'axios';
 
 export default {
@@ -53,16 +57,19 @@ export default {
   components: {
     ElementTable,
     InfoMessage,
+    DisabledPages,
   },
   data() {
     return {
       title: 'find and sort users',
       users: [],
+      request: "",
       usersCopy: null,
       info: null,
       infoIndicator: false,
       infoWindow: null,
       informationIndicator: false,
+      disabledActive: false,
       infoAnswer: [
         {
           id:1,
@@ -73,22 +80,30 @@ export default {
     };
   },
   mounted() {
+    this.disabledActive = true
     axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
       .catch(error => alert(error))
-      .finally( () => ( this.usersCopy = this.users.slice() ) )
+      .finally( () => ( 
+        this.usersCopy = this.users.slice(),
+        this.disabledActive = false
+        ) )
   },
   methods: {
     getUsers: function () {
+      this.disabledActive = true
       axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
       .catch(error => alert(error))
-      .finally( () => ( this.usersCopy = this.users.slice() ) )
+      .finally( () => ( 
+        this.usersCopy = this.users.slice(),
+        this.disabledActive = false
+         ) )
     },
     searchUser: function(){
-      let request = document.getElementById('search').value;
+      let request = this.request
 
       if (request == "" || request == " ") {
         this.informationIndicator = true
@@ -121,8 +136,7 @@ export default {
       this.informationIndicator = false
     },
     clearForm: function (){
-      let valueForm = document.getElementById('search');
-      valueForm.value = ""
+      this.request = ""
     }
   }
 }
@@ -188,6 +202,9 @@ body{
       margin-left: 7px;
       width: 550px;
       height: 35px;
+      padding-left: 5px;
+      font-size: 18px;
+      background-color: #ffffff;
       border-color: #24baef;
       border-radius: .35714rem 0 0 .35714rem;
     }

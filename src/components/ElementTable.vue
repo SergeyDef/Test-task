@@ -47,6 +47,7 @@ export default {
       cursor: pointer;
     }
     .table__line:hover {
+      transition: background-color 1s, color 1s; 
       background-color: #ffdb8b;
       color: #333333;
       font-weight: 700;

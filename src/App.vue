@@ -1,15 +1,15 @@
 <template lang="pug">
   #app
-    header-section()
+    search-users()
 </template>
 
 <script>
-import { HeaderSection } from "@/views"
+import { SearchUsers } from "@/views"
 
 export default {
   name: "app",
   components: {
-    HeaderSection
+    SearchUsers
   },
    data() {
     return {
