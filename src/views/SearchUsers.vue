@@ -5,7 +5,11 @@
     .search__form.form
       .form__clear( v-on:click="clearForm")
         span.clear
-      input( v-model="request" placeholder="Enter the query: first name, last name, or user ID" ).form__input#search
+      input( 
+        v-model="request" 
+        placeholder="Enter the query: first name, last name, or user ID"  
+        v-on:keyup.enter="searchUser" 
+        ).form__input#search
       button( v-on:click="searchUser" ).form__button search
       //select.form__method
         //option( value="1").form__method__item by name
@@ -84,10 +88,7 @@ export default {
     axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
-      .catch(error => 
-        alert(error),
-        this.disabledActive = false
-        )
+      .catch(error => alert(error))
       .finally( () => ( 
         this.usersCopy = this.users.slice(),
         this.disabledActive = false
@@ -99,9 +100,7 @@ export default {
       axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
-      .catch(error => alert(error),
-        this.disabledActive = false
-        )
+      .catch(error => alert(error))
       .finally( () => ( 
         this.usersCopy = this.users.slice(),
         this.disabledActive = false
