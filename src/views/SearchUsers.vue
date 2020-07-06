@@ -84,7 +84,10 @@ export default {
     axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
-      .catch(error => alert(error))
+      .catch(error => 
+        alert(error),
+        this.disabledActive = false
+        )
       .finally( () => ( 
         this.usersCopy = this.users.slice(),
         this.disabledActive = false
@@ -96,7 +99,9 @@ export default {
       axios
       .get('https://raw.githubusercontent.com/SergeyDef/nitrenJSON-/master/users_search.json')
       .then(response => (this.users = response.data.items))
-      .catch(error => alert(error))
+      .catch(error => alert(error),
+        this.disabledActive = false
+        )
       .finally( () => ( 
         this.usersCopy = this.users.slice(),
         this.disabledActive = false
