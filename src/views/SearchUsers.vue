@@ -21,10 +21,26 @@
             span.table__header__text photo
           td.table__cell
             span.table__header__text name
+            nav.table__sort.sort#name__sort( v-on:click="showOptions")
+              .sort__pointer
+            ul( v-if="sortName" v-on:click="sortArray" ).table__sort__option
+              li.alphabet alphabetically
+              li.order reverse order
           td.table__cell
             span.table__header__text surname
+            nav.table__sort.sort#surname__sort( v-on:click="showOptions")
+              .sort__pointer
+            ul( v-if="sortSurname" v-on:click="sortArray" v-on:onblur="hideSort" ).table__sort__option
+              li.alphabet alphabetically
+              li.order reverse order
           td.table__cell
             span.table__header__text id
+            nav.table__sort.sort#id__sort( v-on:click="showOptions")
+              .sort__pointer
+            ul( v-if="sortId" v-on:click="sortArray" ).table__sort__option
+              li.order reverse order
+              li.moreLess from more to less
+              li.lessMore from less to more
         element-table( 
           v-for="user in usersCopy"
           :key="user.id"
@@ -74,6 +90,10 @@ export default {
       infoWindow: null,
       informationIndicator: false,
       disabledActive: false,
+      sortName: false,
+      sortSurname: false,
+      sortId: false,
+      indicatorSort: null,
       infoAnswer: [
         {
           id:1,
@@ -141,6 +161,122 @@ export default {
     },
     clearForm: function (){
       this.request = ""
+    },
+    showOptions: function (){
+      let id_elem = event.target.closest('nav').getAttribute('id')
+
+      this.indicatorSort = id_elem
+      
+      switch(id_elem) {
+        case 'name__sort':
+          this.sortName = true
+          this.sortSurname = false
+          this.sortId = false
+          break
+        case 'surname__sort':
+          this.sortSurname = true
+          this.sortName = false
+          this.sortId = false
+          break
+        case 'id__sort':
+          this.sortId = true
+          this.sortName = false
+          this.sortSurname = false
+          break
+        default:
+          alert("Something went wrong! Contact your administrator.")
+      }
+    },
+    sortArray: function (){
+      let option_sort = event.target.getAttribute('class')
+
+      console.log(this.indicatorSort)
+      console.log(option_sort)
+      
+      if (this.indicatorSort == 'name__sort' && option_sort == 'alphabet') {
+
+        this.usersCopy.sort(( a, b ) =>{
+          if (a.firstName.toLowerCase() > b.firstName.toLowerCase()) {
+            return 1
+          }
+          if (a.firstName.toLowerCase() < b.firstName.toLowerCase()) {
+            return -1
+          }
+           if (a.firstName.toLowerCase() == b.firstName.toLowerCase()) {
+            return 0
+          }
+        })
+
+        this.sortName = false
+
+      } else if (this.indicatorSort == 'name__sort' && option_sort == 'order') {
+
+        this.usersCopy.reverse()
+        this.sortName = false
+
+      } else if (this.indicatorSort == 'surname__sort' && option_sort == 'alphabet') {
+
+        this.usersCopy.sort(( a, b ) =>{
+          if (a.lastName.toLowerCase() > b.lastName.toLowerCase()) {
+            return 1
+          }
+          if (a.lastName.toLowerCase() < b.lastName.toLowerCase()) {
+            return -1
+          }
+           if (a.lastName.toLowerCase() == b.lastName.toLowerCase()) {
+            return 0
+          }
+        })
+
+        this.sortSurname = false
+
+      } else if (this.indicatorSort == 'surname__sort' && option_sort == 'order') {
+
+        this.usersCopy.reverse()
+        this.sortSurname = false
+
+      } else if (this.indicatorSort == 'id__sort' && option_sort == 'order') {
+
+        this.usersCopy.reverse()
+        this.sortId = false
+      } else if (this.indicatorSort == 'id__sort' && option_sort == 'lessMore'){
+
+        this.usersCopy.sort(( a, b ) =>{
+          if (a.id > b.id) {
+            return 1
+          }
+          if (a.id < b.id) {
+            return -1
+          }
+           if (a.id == b.id) {
+            return 0
+          }
+        })
+
+        this.sortId = false
+
+      } else if (this.indicatorSort == 'id__sort' && option_sort == 'moreLess'){
+
+        this.usersCopy.sort(( a, b ) =>{
+          if (a.id < b.id) {
+            return 1
+          }
+          if (a.id > b.id) {
+            return -1
+          }
+           if (a.id == b.id) {
+            return 0
+          }
+        })
+
+        this.sortId = false
+
+      }
+    },
+    hideSort: function() {
+      this.sortName = false
+      this.sortSurname = false
+      this.sortId = false
     }
   }
 }
@@ -281,6 +417,7 @@ body{
   .table{
     margin: 40px auto;
     width: 100%;
+    position: relative;
 
     table{
       margin: auto;
@@ -297,6 +434,50 @@ body{
       font-weight: 900;
       text-transform: uppercase;
     }
+    .table__sort{
+      position: absolute;
+      width: 50px;
+      height: 20px;
+      border-radius: 10px;
+      background-color: #666666;
+      border: 1px solid #fff;
+      cursor: pointer;
+    }
+    .sort{
+
+      &__pointer{
+        width: 20px;
+        height: 20px;
+        margin: auto;
+      }
+      &__pointer:after{
+        content: ''; 
+        position: absolute;
+        left: 13px; bottom: -5px;
+        border: 10px solid transparent;
+        border-top: 10px solid #fff;
+      }
+    }
+    &__sort__option{
+      position: absolute;
+      margin-left: 0;
+      padding-left: 0;
+      top: 65px;
+
+      li{
+        background-color: #000;
+        list-style: none;
+        width: 250px;
+        border: 1px solid #fff;
+        font-size: 16px;
+        padding: 5px 0;
+        cursor: pointer;
+      }
+      li:hover{
+        color: #24baef;
+        background-color: #333333;
+      }
+    }        
   }
 }
 
